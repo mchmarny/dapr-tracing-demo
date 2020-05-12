@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/mchmarny/dapr-tracing-demo/producer/message"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,7 +21,7 @@ func TestCaseHandler(t *testing.T) {
 	r.POST("/", caseHandler)
 	w := httptest.NewRecorder()
 
-	in := &SimpleMessage{
+	in := &message.SimpleMessage{
 		ID:        uuid.New().String(),
 		Text:      "test",
 		CreatedOn: time.Now(),
@@ -34,7 +35,7 @@ func TestCaseHandler(t *testing.T) {
 	r.ServeHTTP(w, req)
 	assert.Equal(t, http.StatusOK, w.Code)
 
-	var out SimpleMessage
+	var out message.SimpleMessage
 	err := json.Unmarshal(w.Body.Bytes(), &out)
 	assert.Nil(t, err)
 	assert.NotNil(t, out)

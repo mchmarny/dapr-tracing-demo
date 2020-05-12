@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/mchmarny/dapr-tracing-demo/producer/message"
 	"github.com/stretchr/testify/assert"
 	"go.opencensus.io/trace"
 )
@@ -24,7 +25,7 @@ func TestBindHandler(t *testing.T) {
 	r.POST("/", receiveHandler)
 	w := httptest.NewRecorder()
 
-	in := &SimpleMessage{
+	in := &message.SimpleMessage{
 		ID:        uuid.New().String(),
 		Text:      "test",
 		CreatedOn: time.Now(),
@@ -58,7 +59,7 @@ func (c *TestClient) SaveState(ctx trace.SpanContext, store, key string, data in
 
 // InvokeService mocks invoking service
 func (c *TestClient) InvokeService(ctx trace.SpanContext, service, method string, data interface{}) (out []byte, err error) {
-	in := &SimpleMessage{
+	in := &message.SimpleMessage{
 		ID:        uuid.New().String(),
 		Text:      "test",
 		CreatedOn: time.Now(),

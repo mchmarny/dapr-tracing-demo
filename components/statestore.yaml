@@ -1,7 +1,7 @@
 apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
-  name: tweet-store
+  name: statestore
 spec:
   type: state.redis
   metadata:
@@ -11,5 +11,3 @@ spec:
     value: ""
   - name: actorStateStore
     value: "true"
-scopes:
-  - producer
