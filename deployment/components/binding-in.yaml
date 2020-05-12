@@ -11,4 +11,4 @@ spec:
   - name: method
     value: POST
 scope:
-  - producer
+  - trace-demo

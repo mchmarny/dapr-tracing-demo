@@ -11,4 +11,4 @@ spec:
   - name: method
     value: POST
 scope:
-  - subscriber
+  - trace-demo

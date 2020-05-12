@@ -11,4 +11,4 @@ spec:
   - name: redisPassword
     value: ""
 scope:
-  - producer
+  - trace-demo
