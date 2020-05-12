@@ -9,3 +9,5 @@ spec:
     value: http://localhost:8081/receive
   - name: method
     value: POST
+scope:
+  - producer

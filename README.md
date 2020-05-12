@@ -44,19 +44,29 @@ Inside of the `dapr-tracing-demo` directory, start each one of the service indiv
 ### Formatter
 
 ```shell
-dapr run dist/formatter --app-id formatter --app-port 8082 --protocol http
+dapr run dist/formatter \
+     --app-id formatter \
+     --app-port 8082 \
+     --protocol http
 ```
 
 ### Subscriber
 
 ```shell
-dapr run dist/subscriber --app-id subscriber --app-port 8083 --protocol http
+dapr run dist/subscriber \
+     --app-id subscriber \
+     --app-port 8083 \
+     --protocol http
 ```
 
 ### Producer
 
 ```shell
-dapr run dist/producer --app-id producer --app-port 8081 --protocol http --port 3500
+dapr run dist/producer \
+     --app-id producer \
+     --app-port 8081 \
+     --protocol http \
+     --port 3500
 ```
 
 ### Sender
@@ -67,28 +77,23 @@ dapr run dist/producer --app-id producer --app-port 8081 --protocol http --port 
 dist/sender
 ```
 
-## Send Data
+## Data
+
+Now that all the services are running, send data by posting data to Dapr for the `receive` input binding
 
 ```shell
-bin/post
+curl -X POST -d '{ "data": {"id":"1", "txt":"test"} }' \
+     -H "Content-type: application/json" \
+     "http://localhost:3500/v1.0/bindings/receive"
 ```
 
 
 ## Observability 
 
-
-![](../img/trace.png)
-
 http://localhost:9411/zipkin/
 
 > Note, if your Zipkin isn't deployed in the `default` namespace you will have to edit the `exporterAddress` in [deployment/tracing/zipkin.yaml](deployment/tracing/zipkin.yaml)
 
-
-Then just restart all the deployments 
-
-```shell
-kubectl rollout restart deployment processor sentimenter  viewer
-```
 
 ## Status 
 

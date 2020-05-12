@@ -1,40 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sentimenter
+  name: subscriber
+  namespace: trace
   labels:
-    app: sentimenter
+    app: subscriber
     env: demo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: sentimenter
+      app: subscriber
   template:
     metadata:
       labels:
-        app: sentimenter
+        app: subscriber
         env: demo
       annotations:
         dapr.io/enabled: "true"
-        dapr.io/id: "sentimenter"
-        dapr.io/port: "8082"
+        dapr.io/id: "subscriber"
+        dapr.io/port: "8083"
         dapr.io/log-as-json: "true"
         dapr.io/config: "tracing"
     spec:
       containers:
       - name: user-container
-        image: mchmarny/sentimenter:v0.7.1
+        image: mchmarny/dapr-subscriber-demo:v0.1.2
         imagePullPolicy: Always
         ports:
-        - containerPort: 8082
+        - containerPort: 8083
         env:
         - name: PORT
           value: "8082"
         - name: DAPR_HTTP_PORT
           value: "3500"
-        - name: CS_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: demo-sentimenter-secret
-              key: token

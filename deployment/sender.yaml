@@ -1,37 +1,49 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: viewer
+  name: sender
+  namespace: trace
   labels:
-    app: viewer
+    app: sender
     env: demo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: viewer
+      app: sender
   template:
     metadata:
       labels:
-        app: viewer
+        app: sender
         env: demo
       annotations:
         dapr.io/enabled: "true"
-        dapr.io/id: "viewer"
-        dapr.io/port: "8083"
+        dapr.io/id: "sender"
+        dapr.io/port: "8084"
         dapr.io/log-as-json: "true"
         dapr.io/config: "tracing"
     spec:
       containers:
-      - name: user-container
-        image: mchmarny/viewer:v0.7.1
+      - name: service
+        image: mchmarny/dapr-sender-demo:v0.1.2
         imagePullPolicy: Always
         ports:
-        - containerPort: 8083
+        - containerPort: 8084
         env:
         - name: PORT
-          value: "8083"
+          value: "8082"
         - name: DAPR_HTTP_PORT
           value: "3500"
-        - name: VIEWER_SOURCE_TOPIC_NAME
-          value: "processed"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sender
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 8084
+  selector:
+    app: sender
+  

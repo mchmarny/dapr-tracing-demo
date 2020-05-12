@@ -1,15 +1,14 @@
 apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
-  name: store
+  name: messages
+  namespace: trace-demo
 spec:
-  type: state.redis
+  type: pubsub.redis
   metadata:
   - name: redisHost
     value: localhost:6379
   - name: redisPassword
     value: ""
-  - name: actorStateStore
-    value: "true"
 scope:
   - producer

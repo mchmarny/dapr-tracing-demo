@@ -1,43 +1,36 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: processor
+  name: formatter
+  namespace: trace
   labels:
-    app: processor
+    app: formatter
     env: demo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: processor
+      app: formatter
   template:
     metadata:
       labels:
-        app: processor
+        app: formatter
         env: demo
       annotations:
         dapr.io/enabled: "true"
-        dapr.io/id: "processor"
-        dapr.io/port: "8081"
+        dapr.io/id: "formatter"
+        dapr.io/port: "8082"
         dapr.io/log-as-json: "true"
         dapr.io/config: "tracing"
     spec:
       containers:
-      - name: user-container
-        image: mchmarny/processor:v0.7.1
+      - name: service
+        image: mchmarny/dapr-formatter-demo:v0.1.2
         imagePullPolicy: Always
         ports:
-        - containerPort: 8081
+        - containerPort: 8082
         env:
         - name: PORT
-          value: "8081"
+          value: "8082"
         - name: DAPR_HTTP_PORT
           value: "3500"
-        - name: PROCESSOR_STATE_STORE_NAME
-          value: "tweet-store"
-        - name: PROCESSOR_PUBSUB_TOPIC_NAME
-          value: "processed"
-        - name: PROCESSOR_SCORE_SERVICE_NAME
-          value: "sentimenter"
-        - name: PROCESSOR_SCORE_METHOD_NAME
-          value: "score"

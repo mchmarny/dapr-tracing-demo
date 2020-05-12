@@ -1,13 +1,14 @@
 apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
-  name: send
+  name: receive
+  namespace: trace-demo
 spec:
   type: bindings.http
   metadata:
   - name: url
-    value: http://localhost:8084/post
+    value: http://localhost:8081/receive
   - name: method
     value: POST
 scope:
-  - subscriber
+  - producer

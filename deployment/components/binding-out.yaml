@@ -2,11 +2,12 @@ apiVersion: dapr.io/v1alpha1
 kind: Component
 metadata:
   name: send
+  namespace: trace-demo
 spec:
   type: bindings.http
   metadata:
   - name: url
-    value: http://localhost:8084/post
+    value: http://zipkin.trace-demo.svc.cluster.local/post
   - name: method
     value: POST
 scope:
