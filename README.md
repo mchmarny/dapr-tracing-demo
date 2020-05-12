@@ -5,7 +5,6 @@ Dapr tracing demo integrating multiple self-container microservices (no dependen
 * service to service invocation 
 * input binding
 * state operation 
-* pubsub publish
 * pubsub subscribe 
 * output binding  
 
@@ -89,6 +88,58 @@ Then just restart all the deployments
 
 ```shell
 kubectl rollout restart deployment processor sentimenter  viewer
+```
+
+## Status 
+
+### Service to service invocation 
+
+**Status**: ✅
+**Description**: Trace parent populated and trace state empty as expected
+
+```shell
+traceparent: 00-6b0b8b04cfbde34f867cc52e68eaefae-7d4e118a07a9b590-00
+tracestate:
+```
+
+## Input binding
+
+**Status**: ❌
+**Description**: Expected trace parent to be populated and trace state empty
+
+```shell
+traceparent: 
+tracestate:
+```
+
+## State operation 
+
+**Status**: ❌
+**Description**: Expected trace parent and trace state to be populated
+
+```shell
+traceparent: 
+tracestate:
+```
+
+## Pubsub subscribe 
+
+**Status**: ❌
+**Description**: Expected trace parent and trace state to be populated
+
+```shell
+traceparent: 
+tracestate:
+```
+
+## Output binding 
+
+**Status**: ❌
+**Description**: Expected trace parent and trace state to be populated
+
+```shell
+traceparent: 
+tracestate:
 ```
 
 ## Disclaimer

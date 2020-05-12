@@ -107,9 +107,14 @@ func receiveHandler(c *gin.Context) {
 // SimpleMessage represents simple message
 type SimpleMessage struct {
 	// ID is the ID of the message
-	ID string `json:"id"`
+	ID string `json:"id,omitempty"`
 	// Text is the test of the message
-	Text string `json:"txt"`
+	Text string `json:"txt,omitempty"`
 	// CreatedOn is the time when this message was created
-	CreatedOn time.Time `json:"on"`
+	CreatedOn time.Time `json:"on,omitempty"`
+}
+
+// Envelope is the output binding content
+type Envelope []struct {
+	Data interface{} `json:"data,omitempty"`
 }
