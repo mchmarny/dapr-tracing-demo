@@ -3,6 +3,6 @@
 set -o errexit
 set -o pipefail
 
-curl -d '{"id":"1", "txt":"test"}' \
+curl -X POST -d '{ "data": {"id":"1", "txt":"test"} }' \
      -H "Content-type: application/json" \
      "http://localhost:3500/v1.0/bindings/receive"

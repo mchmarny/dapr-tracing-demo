@@ -66,6 +66,7 @@ func receiveHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, clientError)
 		return
 	}
+	logger.Printf("saved: %v", m)
 
 	// format
 	b, err := daprClient.InvokeService(ctx, serviceName, serviceMethod, m)
@@ -82,6 +83,7 @@ func receiveHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, clientError)
 		return
 	}
+	logger.Printf("formatted: %v", m)
 
 	// publish
 	if err = daprClient.Publish(ctx, eventTopic, d); err != nil {
@@ -89,6 +91,7 @@ func receiveHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, clientError)
 		return
 	}
+	logger.Print("published")
 
 	// send
 	if _, err = daprClient.InvokeBinding(ctx, bindingName, d); err != nil {
@@ -96,6 +99,7 @@ func receiveHandler(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, clientError)
 		return
 	}
+	logger.Print("sent to output binding, done")
 
 	c.JSON(http.StatusOK, gin.H{})
 }

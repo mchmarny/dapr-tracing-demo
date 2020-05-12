@@ -45,7 +45,7 @@ Inside of the `dapr-tracing-demo` directory, start each one of the service indiv
 ### Formatter
 
 ```shell
-dapr run dist/formatter --app-id formatter --app-port 808 --protocol http
+dapr run dist/formatter --app-id formatter --app-port 8082 --protocol http
 ```
 
 ### Subscriber
@@ -67,6 +67,13 @@ dapr run dist/producer --app-id producer --app-port 8081 --protocol http --port 
 ```shell
 dist/sender
 ```
+
+## Send Data
+
+```shell
+bin/post
+```
+
 
 ## Observability 
 

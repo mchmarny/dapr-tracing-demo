@@ -24,8 +24,8 @@ var (
 	servicePort = env.MustGetEnvVar("PORT", "8081")
 
 	// dapr
-	stateStore    = env.MustGetEnvVar("PRODUCER_STATE_STORE_NAME", "statestore")
-	eventTopic    = env.MustGetEnvVar("PRODUCER_PUBSUB_TOPIC_NAME", "messagebus")
+	stateStore    = env.MustGetEnvVar("PRODUCER_STATE_STORE_NAME", "store")
+	eventTopic    = env.MustGetEnvVar("PRODUCER_PUBSUB_TOPIC_NAME", "messages")
 	serviceName   = env.MustGetEnvVar("PRODUCER_SERVICE_NAME", "formatter")
 	serviceMethod = env.MustGetEnvVar("PRODUCER_METHOD_NAME", "case")
 	bindingName   = env.MustGetEnvVar("PRODUCER_BINDING_NAME", "send")

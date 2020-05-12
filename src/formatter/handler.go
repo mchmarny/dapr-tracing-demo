@@ -42,11 +42,13 @@ func caseHandler(c *gin.Context) {
 		[]byte{byte(ctx.TraceOptions)})
 
 	m := SimpleMessage{}
-	if err := c.ShouldBindJSON(&m); err != nil || m.Text == "" {
+	if err := c.ShouldBindJSON(&m); err != nil {
 		logger.Printf("error binding request: %v", err)
 		c.JSON(http.StatusBadRequest, clientError)
 		return
 	}
+
+	logger.Printf("message: %v", m)
 
 	m.Text = fmt.Sprintf("%s -- decorated", strings.ToUpper(m.Text))
 

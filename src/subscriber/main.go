@@ -21,7 +21,7 @@ var (
 
 	// service
 	servicePort = env.MustGetEnvVar("PORT", "8083")
-	subTopic    = env.MustGetEnvVar("SUBSCRIBER_TOPIC_NAME", "subme")
+	subTopic    = env.MustGetEnvVar("SUBSCRIBER_TOPIC_NAME", "messages")
 
 	broadcaster *melody.Melody
 )

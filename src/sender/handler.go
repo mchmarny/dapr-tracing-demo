@@ -27,7 +27,7 @@ func postHandler(c *gin.Context) {
 	logger.Printf("tracestate: %s", c.GetHeader("tracestate"))
 
 	m := SimpleMessage{}
-	if err := c.ShouldBindJSON(&m); err != nil || m.Text == "" {
+	if err := c.ShouldBindJSON(&m); err != nil {
 		logger.Printf("error binding request: %v", err)
 		c.JSON(http.StatusBadRequest, clientError)
 		return
