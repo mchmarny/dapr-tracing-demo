@@ -8,7 +8,6 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/google/uuid"
-	"github.com/mchmarny/dapr-tracing-demo/message/pkg/message"
 	"go.opencensus.io/plugin/ochttp/propagation/tracecontext"
 	"go.opencensus.io/trace"
 )
@@ -43,7 +42,7 @@ func receiveHandler(c *gin.Context) {
 		ctx.SpanID[:],
 		[]byte{byte(ctx.TraceOptions)})
 
-	var m message.SimpleMessage
+	var m SimpleMessage
 	if err := c.ShouldBindJSON(&m); err != nil {
 		logger.Printf("error binding input message: %v", err)
 		c.JSON(http.StatusBadRequest, clientError)
@@ -77,7 +76,7 @@ func receiveHandler(c *gin.Context) {
 		return
 	}
 
-	var d message.SimpleMessage
+	var d SimpleMessage
 	if err := json.Unmarshal(b, &d); err != nil {
 		logger.Printf("error parsing service response (%s): %v", string(b), err)
 		c.JSON(http.StatusInternalServerError, clientError)
@@ -99,4 +98,14 @@ func receiveHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{})
+}
+
+// SimpleMessage represents simple message
+type SimpleMessage struct {
+	// ID is the ID of the message
+	ID string `json:"id"`
+	// Text is the test of the message
+	Text string `json:"txt"`
+	// CreatedOn is the time when this message was created
+	CreatedOn time.Time `json:"on"`
 }

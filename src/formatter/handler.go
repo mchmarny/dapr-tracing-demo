@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mchmarny/dapr-tracing-demo/producer/message"
 	"go.opencensus.io/plugin/ochttp/propagation/tracecontext"
 	"go.opencensus.io/trace"
 )
@@ -42,7 +41,7 @@ func caseHandler(c *gin.Context) {
 		ctx.SpanID[:],
 		[]byte{byte(ctx.TraceOptions)})
 
-	m := message.SimpleMessage{}
+	m := SimpleMessage{}
 	if err := c.ShouldBindJSON(&m); err != nil || m.Text == "" {
 		logger.Printf("error binding request: %v", err)
 		c.JSON(http.StatusBadRequest, clientError)
@@ -52,4 +51,14 @@ func caseHandler(c *gin.Context) {
 	m.Text = fmt.Sprintf("%s -- decorated", strings.ToUpper(m.Text))
 
 	c.JSON(http.StatusOK, m)
+}
+
+// SimpleMessage represents simple message
+type SimpleMessage struct {
+	// ID is the ID of the message
+	ID string `json:"id"`
+	// Text is the test of the message
+	Text string `json:"txt"`
+	// CreatedOn is the time when this message was created
+	CreatedOn time.Time `json:"on"`
 }
