@@ -18,18 +18,18 @@ function publish_release {
 
     docker build \
       --build-arg APP_VERSION=$RELEASE_VERSION \
-      -t "${DOCKERHUB_USER}/${PRJ}:${RELEASE_VERSION}" \
+      -t "${DOCKERHUB_USER}/dapr-${PRJ}-demo:${RELEASE_VERSION}" \
       .
 
-    echo "publishing ${DOCKERHUB_USER}/${PRJ}:${RELEASE_VERSION}"
-    docker push "${DOCKERHUB_USER}/${PRJ}:${RELEASE_VERSION}"
+    echo "publishing ${DOCKERHUB_USER}/dapr-${PRJ}-demo:${RELEASE_VERSION}"
+    docker push "${DOCKERHUB_USER}/dapr-${PRJ}-demo:${RELEASE_VERSION}"
 
     )
 }
 
-
+publish_release "formatter"
 publish_release "producer"
-publish_release "decorator"
+publish_release "sender"
 publish_release "subscriber"
 
 echo "DONE"

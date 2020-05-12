@@ -28,6 +28,7 @@ var (
 	eventTopic    = env.MustGetEnvVar("PRODUCER_PUBSUB_TOPIC_NAME", "messagebus")
 	serviceName   = env.MustGetEnvVar("PRODUCER_SERVICE_NAME", "decorator")
 	serviceMethod = env.MustGetEnvVar("PRODUCER_METHOD_NAME", "decorate")
+	bindingName   = env.MustGetEnvVar("PRODUCER_BINDING_NAME", "send")
 
 	// dapr
 	daprClient Client
@@ -49,7 +50,7 @@ func main() {
 
 	// simple routes
 	r.GET("/", defaultHandler)
-	r.POST("/bindme", bindHandler)
+	r.POST("/receive", receiveHandler)
 
 	// server
 	hostPort := net.JoinHostPort("0.0.0.0", servicePort)
@@ -78,4 +79,5 @@ type Client interface {
 	SaveState(ctx trace.SpanContext, store, key string, data interface{}) error
 	InvokeService(ctx trace.SpanContext, service, method string, data interface{}) (out []byte, err error)
 	Publish(ctx trace.SpanContext, topic string, data interface{}) error
+	InvokeBinding(ctx trace.SpanContext, binding string, data interface{}) (out []byte, err error)
 }

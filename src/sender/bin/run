@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+
+go mod tidy
+go mod vendor
+
+dapr run go run handler.go main.go \
+    --app-id processor \
+    --app-port 8081 \
+    --protocol http \
+    --port 3500

@@ -146,45 +146,10 @@ open "http://${VIEWER_IP}/"
 
 ## Observability 
 
-### Azure 
-
-You can view the scored tweets in Azure table storage 
-
-![](../resource/image/state.png)
-
-Similarly you can monitor the pubsub topic throughout in Azure Service Bus 
-
-![](../resource/image/pubsub.png)
-
-
-### OSS
-
-In addition, you can also observe Dapr metrics, logs, and traces for this demo. 
-
-#### Metrics in Grafana dashboard 
-
-> Instructions on how to setup Grafana for Dapr are [here](https://github.com/dapr/docs/blob/master/howto/setup-monitoring-tools/setup-prometheus-grafana.md)
-
-Forward port
-
-http://localhost:8080/
-
-![](../resource/image/metric.png)
-
-
-#### Logs in Kibana dashboard 
-
-> Instructions on how to setup Kibana for Dapr are [here](https://github.com/dapr/docs/blob/master/howto/setup-monitoring-tools/setup-fluentd-es-kibana.md)
-
-![](../resource/image/log.png)
-
-http://localhost:5601/
-
-#### Traces in Zipkin dashboard 
 
 > Instructions on how to setup Zipkin for Dapr are [here](https://github.com/dapr/docs/blob/master/howto/diagnose-with-tracing/zipkin.md)
 
-![](../resource/image/trace.png)
+![](../img/trace.png)
 
 http://localhost:9411/zipkin/
 

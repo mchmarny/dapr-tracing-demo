@@ -14,14 +14,14 @@ import (
 	"go.opencensus.io/trace"
 )
 
-func TestTweetHandler(t *testing.T) {
+func TestBindHandler(t *testing.T) {
 
 	daprClient = GetTestClient()
 
 	gin.SetMode(gin.ReleaseMode)
 
 	r := gin.Default()
-	r.POST("/bindme", bindHandler)
+	r.POST("/", receiveHandler)
 	w := httptest.NewRecorder()
 
 	in := &SimpleMessage{
@@ -31,7 +31,7 @@ func TestTweetHandler(t *testing.T) {
 	}
 	data, _ := json.Marshal(in)
 
-	req, _ := http.NewRequest("POST", "/bindme", bytes.NewBuffer(data))
+	req, _ := http.NewRequest(http.MethodPost, "/", bytes.NewBuffer(data))
 	req.Header.Set("Content-Type", "application/json")
 
 	r.ServeHTTP(w, req)
@@ -44,17 +44,19 @@ func GetTestClient() *TestClient {
 }
 
 var (
-	// test test client against local interace
 	_ = Client(&TestClient{})
 )
 
+// TestClient is a test dapr client
 type TestClient struct {
 }
 
+// SaveState mocks saving state
 func (c *TestClient) SaveState(ctx trace.SpanContext, store, key string, data interface{}) error {
 	return nil
 }
 
+// InvokeService mocks invoking service
 func (c *TestClient) InvokeService(ctx trace.SpanContext, service, method string, data interface{}) (out []byte, err error) {
 	in := &SimpleMessage{
 		ID:        uuid.New().String(),
@@ -65,6 +67,12 @@ func (c *TestClient) InvokeService(ctx trace.SpanContext, service, method string
 	return b, nil
 }
 
+// Publish mocks publishing to topic
 func (c *TestClient) Publish(ctx trace.SpanContext, topic string, data interface{}) error {
 	return nil
+}
+
+// InvokeBinding mocks output binding
+func (c *TestClient) InvokeBinding(ctx trace.SpanContext, binding string, data interface{}) (out []byte, err error) {
+	return []byte(""), nil
 }

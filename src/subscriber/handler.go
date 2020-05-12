@@ -32,13 +32,16 @@ func topicListHandler(c *gin.Context) {
 }
 
 func subscribeHandler(c *gin.Context) {
+	logger.Printf("traceparent: %s", c.GetHeader("traceparent"))
+	logger.Printf("tracestate: %s", c.GetHeader("tracestate"))
+
 	httpFmt := tracecontext.HTTPFormat{}
 	ctx, ok := httpFmt.SpanContextFromRequest(c.Request)
 	if !ok {
 		ctx = trace.SpanContext{}
 	}
 
-	logger.Printf("Trace Info: 0-%x-%x-%x",
+	logger.Printf("trace info: 0-%x-%x-%x",
 		ctx.TraceID[:],
 		ctx.SpanID[:],
 		[]byte{byte(ctx.TraceOptions)})

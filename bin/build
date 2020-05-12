@@ -18,12 +18,13 @@ function build_release {
     echo "Release Version: ${RELEASE_VERSION}"
     CGO_ENABLED=0 go build -a -tags netgo -ldflags \
         "-w -extldflags '-static' -X main.AppVersion=${RELEASE_VERSION}" \
-        -mod vendor -o "../../bin/${PRJ}"
+        -mod vendor -o "../../dist/${PRJ}"
     )
 }
 
-build_release "decorator"
+build_release "formatter"
 build_release "producer"
+build_release "sender"
 build_release "subscriber"
 
 echo "DONE"

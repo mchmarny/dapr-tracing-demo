@@ -27,21 +27,24 @@ func defaultHandler(c *gin.Context) {
 	})
 }
 
-func bindHandler(c *gin.Context) {
+func receiveHandler(c *gin.Context) {
+	logger.Printf("traceparent: %s", c.GetHeader("traceparent"))
+	logger.Printf("tracestate: %s", c.GetHeader("tracestate"))
+
 	httpFmt := tracecontext.HTTPFormat{}
 	ctx, ok := httpFmt.SpanContextFromRequest(c.Request)
 	if !ok {
 		ctx = trace.SpanContext{}
 	}
 
-	logger.Printf("Trace Info: 0-%x-%x-%x",
+	logger.Printf("trace info: 0-%x-%x-%x",
 		ctx.TraceID[:],
 		ctx.SpanID[:],
 		[]byte{byte(ctx.TraceOptions)})
 
 	var m SimpleMessage
 	if err := c.ShouldBindJSON(&m); err != nil {
-		logger.Printf("error binding message: %v", err)
+		logger.Printf("error binding input message: %v", err)
 		c.JSON(http.StatusBadRequest, clientError)
 		return
 	}
@@ -54,7 +57,7 @@ func bindHandler(c *gin.Context) {
 		m.CreatedOn = time.Now()
 	}
 
-	// save original tweet in case we need to reprocess it
+	// save
 	err := daprClient.SaveState(ctx, stateStore, m.ID, m)
 	if err != nil {
 		logger.Printf("error saving state: %v", err)
@@ -62,7 +65,7 @@ func bindHandler(c *gin.Context) {
 		return
 	}
 
-	// score simple tweet
+	// format
 	b, err := daprClient.InvokeService(ctx, serviceName, serviceMethod, m)
 	if err != nil {
 		logger.Printf("error invoking service (%s/%s): %v",
@@ -78,9 +81,16 @@ func bindHandler(c *gin.Context) {
 		return
 	}
 
-	// publish simple tweet
+	// publish
 	if err = daprClient.Publish(ctx, eventTopic, d); err != nil {
-		logger.Printf("error publishing content (%v): %v", d, err)
+		logger.Printf("error publishing content %s (%v): %v", eventTopic, d, err)
+		c.JSON(http.StatusInternalServerError, clientError)
+		return
+	}
+
+	// send
+	if _, err = daprClient.InvokeBinding(ctx, bindingName, d); err != nil {
+		logger.Printf("error binding output message %s (%v): %v", bindingName, d, err)
 		c.JSON(http.StatusInternalServerError, clientError)
 		return
 	}

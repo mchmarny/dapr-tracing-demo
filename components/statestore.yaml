@@ -11,3 +11,5 @@ spec:
     value: ""
   - name: actorStateStore
     value: "true"
+scopes:
+  - producer

@@ -1,37 +1,33 @@
 # dapr-tracing-demo
 
-Example of Twitter event processing pipeline using dapr framework.
+Dapr tracing demo integrating multiple self-container microservices (no dependencies) to illustrate end-to-end tracing where the tracing headers are being propagated across:
 
-![alt text](resource/image/overview-local.png "Local Pipeline Overview")
+* service to service invocation 
+* input binding
+* state operation 
+* pubsub publish
+* pubsub subscribe 
+* output binding  
 
-> This readme covers local deployment. For Kubernetes deployment instructions [see here](./deployment/)
+![alt text](img/overview.png "Overview")
 
 ## Prerequisites
 
-### Dapr
-
-To run this demo locally, you will have to install [Dapr](https://github.com).
-
-### Twitter
-
-To use the Dapr twitter binding you will also need Twitter API consumer keys and secrets. You can get these by registering your Twitter application [here](https://developer.twitter.com/en/apps/create).
-
-### Cognitive Services
-
-To analyze sentiment of each text, you will also need an API token for the Azure [Cognitive Services](https://azure.microsoft.com/en-us/services/cognitive-services/). You can learn more about the API and how to configure it [here](https://docs.microsoft.com/en-us/azure/cognitive-services/text-analytics/how-tos/text-analytics-how-to-sentiment-analysis?tabs=version-2#sentiment-analysis-versions-and-features).
+* To run this demo locally, you will have to install [Dapr](https://github.com/dapr/docs/blob/master/getting-started/environment-setup.md).
+* Additionally to view the resulting traces you will need Zipkin. Instructions on how to setup Zipkin for Dapr are [here](https://github.com/dapr/docs/blob/master/howto/diagnose-with-tracing/zipkin.md)
 
 ## Setup
 
-Assuming you have all the prerequisites mentioned above you can demo this dapr pipeline in following steps. First, start by cloning this repo:
+Assuming you have all the prerequisites mentioned above, first, start by cloning this repo:
 
 ```shell
-git clone https://github.com/mchmarny/dapr-pipeline.git
+git clone https://github.com/mchmarny/dapr-tracing-demo.git
 ```
 
-and then navigate into the `dapr-pipeline` directory:
+navigate into the `dapr-tracing-demo` directory
 
 ```shell
-cd dapr-pipeline
+cd dapr-tracing-demo
 ```
 
 and build the executables for your OS
@@ -40,87 +36,53 @@ and build the executables for your OS
 bin/build
 ```
 
-> Note, if you don't have `go` you can download the pre-built executables for Mac, Windows or Linux from the [latest release](https://github.com/mchmarny/dapr-pipeline/releases/latest).
+You should see now 4 files in the [dist](dist) directory: `producer`, `formatter`, `subscriber`, `sender`
 
 ## Run
 
-This pipeline consists of three microservices: Processor, Sentimenter, and Viewer. Still inside of the the `dapr-pipeline` you cloned above, follow these instructions to launching each one of these services:
+Inside of the `dapr-tracing-demo` directory, start each one of the service individually:
 
-### Sentimenter
-
-To starting `sentimenter`, first export your Azure Cognitive Services API key (see the [Prerequisites](#prerequisites) section for details).
+### Formatter
 
 ```shell
-export CS_TOKEN="<your key here>"
+dapr run dist/formatter --app-id formatter --app-port 808 --protocol http
 ```
 
-And then launch it using Dapr:
+### Subscriber
 
 ```shell
-dapr run bin/sentimenter --app-id sentimenter --app-port 8082 --protocol http
+dapr run dist/subscriber --app-id subscriber --app-port 8083 --protocol http
 ```
 
-If everything goes well when launch these services using Dapr you will see following message:
+### Producer
 
 ```shell
-ℹ️  Updating metadata for app command: bin/sentimenter
-✅  You're up and running! Both Dapr and your app logs will appear here.
+dapr run dist/producer --app-id producer --app-port 8081 --protocol http --port 3500
 ```
 
-### Viewer
+### Sender
 
-Next, start `viewer`. In yet another terminal window navigate to the `dapr-pipeline` directory and run:
+> Sender is not a Dapr service, it will serve as a target for output binding 
 
 ```shell
-dapr run bin/viewer --app-id viewer --app-port 8083 --protocol http
+dist/sender
 ```
 
-While there still won't be any data, at this point you should be able to navigate to the viewer UI
-
-http://localhost:8083/
+## Observability 
 
 
-### Processor
+![](../img/trace.png)
 
-Finally, to start the `processor`, first edit the Dapt [Twitter input binding component](components/twitter.yaml) using the Twitter API secrets your created in [Prerequisites](#prerequisites)):
+http://localhost:9411/zipkin/
 
-```yaml
-apiVersion: dapr.io/v1alpha1
-kind: Component
-metadata:
-  name: tweets
-spec:
-  type: bindings.twitter
-  metadata:
-  - name: consumerKey
-    value: ""
-  - name: consumerSecret
-    value: ""
-  - name: accessToken
-    value: ""
-  - name: accessSecret
-    value: ""
-  - name: query
-    value: "serverless"  
-```
+> Note, if your Zipkin isn't deployed in the `default` namespace you will have to edit the `exporterAddress` in [deployment/tracing/zipkin.yaml](deployment/tracing/zipkin.yaml)
 
-> For demo purposes use a search term that appears often on Twitter (e.g. serverless)
 
-Once the Twitter API secrets are set, you are ready to run the `processor`:
+Then just restart all the deployments 
 
 ```shell
-dapr run bin/processor --app-id processor --app-port 8081 --protocol http --port 3500
+kubectl rollout restart deployment processor sentimenter  viewer
 ```
-
-### Dashboard
-
-Once all three microservices are running, you can go back to the `viewer` (http://localhost:8083/). After a few moments you should see something like this:
-
-![](resource/image/ui.png)  
-
-The icon left of the tweet author's username indicates the sentiment (positive <img src="resource/static/img/s1.svg" width="25" style="vertical-align:middle">, negative <img src="resource/static/img/s0.svg" width="25" style="vertical-align:middle">, or neutral <img src="resource/static/img/neutral.svg" width="25" style="vertical-align:middle">). The Twitter logo right of the username is also linked to the original tweet on https://twitter.com.
-
-> YOu can find how-to on deployment this demo on Kubernetes [here](./deployment/)
 
 ## Disclaimer
 
