@@ -133,7 +133,7 @@ tracestate:
 **Description**: Expected trace parent and trace state to be populated
 
 ```shell
-traceparent: 
+traceparent: 00-6b0b8b04cfbde34f867cc52e68eaefae-7d4e118a07a9b590-00
 tracestate:
 ```
 
