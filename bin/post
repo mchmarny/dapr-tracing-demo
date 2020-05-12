@@ -1,0 +1,8 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+
+curl -d '{"id":"id-1234", "txt":"test"}' \
+     -H "Content-type: application/json" \
+     "http://localhost:8082/decorate"

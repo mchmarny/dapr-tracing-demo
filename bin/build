@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -o errexit
+
+DIR="$(dirname "$0")"
+. "${DIR}/config"
+
+function build_release {
+    (
+    PRJ=$1
+    cd "src/${PRJ}"
+    DIR="$(pwd)"
+    echo "building ${PRJ} in ${DIR} dir..."
+
+    go mod tidy
+    go mod vendor
+
+    echo "Release Version: ${RELEASE_VERSION}"
+    CGO_ENABLED=0 go build -a -tags netgo -ldflags \
+        "-w -extldflags '-static' -X main.AppVersion=${RELEASE_VERSION}" \
+        -mod vendor -o "../../bin/${PRJ}"
+    )
+}
+
+build_release "decorator"
+build_release "producer"
+build_release "subscriber"
+
+echo "DONE"

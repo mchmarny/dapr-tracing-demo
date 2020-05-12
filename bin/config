@@ -1,0 +1,4 @@
+#!/bin/bash
+
+export DOCKERHUB_USER="mchmarny"
+export RELEASE_VERSION="v0.1.1"
