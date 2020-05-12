@@ -93,14 +93,6 @@ func receiveHandler(c *gin.Context) {
 	}
 	logger.Print("published")
 
-	// send
-	if _, err = daprClient.InvokeBinding(ctx, bindingName, d); err != nil {
-		logger.Printf("error binding output message %s (%v): %v", bindingName, d, err)
-		c.JSON(http.StatusInternalServerError, clientError)
-		return
-	}
-	logger.Print("sent to output binding, done")
-
 	c.JSON(http.StatusOK, gin.H{})
 }
 

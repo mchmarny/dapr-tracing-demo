@@ -71,8 +71,3 @@ func (c *TestClient) InvokeService(ctx trace.SpanContext, service, method string
 func (c *TestClient) Publish(ctx trace.SpanContext, topic string, data interface{}) error {
 	return nil
 }
-
-// InvokeBinding mocks output binding
-func (c *TestClient) InvokeBinding(ctx trace.SpanContext, binding string, data interface{}) (out []byte, err error) {
-	return []byte(""), nil
-}

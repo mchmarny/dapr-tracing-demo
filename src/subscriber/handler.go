@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"net/http"
 	"time"
 
@@ -8,6 +9,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.opencensus.io/plugin/ochttp/propagation/tracecontext"
 	"go.opencensus.io/trace"
+)
+
+var (
+	clientError = gin.H{
+		"error":   "Bad Request",
+		"message": "Error processing your request, see logs for details",
+	}
 )
 
 func rootHandler(c *gin.Context) {
@@ -56,8 +64,21 @@ func subscribeHandler(c *gin.Context) {
 		return
 	}
 
-	// logger.Printf("context : %v", e.Context)
-	logger.Printf("content: %s", string(e.Data()))
+	var m SimpleMessage
+	if err := json.Unmarshal(e.Data(), &m); err != nil {
+		logger.Printf("error parsing event data (%s): %v", string(e.Data()), err)
+		c.JSON(http.StatusInternalServerError, clientError)
+		return
+	}
+	logger.Printf("message: %v", m)
+
+	// send
+	if _, err := daprClient.InvokeBinding(ctx, bindingName, m); err != nil {
+		logger.Printf("error binding output message %s (%v): %v", bindingName, m, err)
+		c.JSON(http.StatusInternalServerError, clientError)
+		return
+	}
+	logger.Print("sent to output binding")
 
 	c.JSON(http.StatusOK, gin.H{})
 }

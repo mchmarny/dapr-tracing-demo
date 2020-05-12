@@ -10,10 +10,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
+	"go.opencensus.io/trace"
 )
 
 func TestSubscribeHandler(t *testing.T) {
 	gin.SetMode(gin.ReleaseMode)
+
+	daprClient = GetTestClient()
 
 	r := gin.Default()
 	r.POST("/", subscribeHandler)
@@ -32,6 +35,8 @@ func TestSubscribeHandler(t *testing.T) {
 func TestTopicListHandler(t *testing.T) {
 	gin.SetMode(gin.ReleaseMode)
 
+	daprClient = GetTestClient()
+
 	r := gin.Default()
 	r.GET("/", topicListHandler)
 	w := httptest.NewRecorder()
@@ -48,4 +53,21 @@ func TestTopicListHandler(t *testing.T) {
 	assert.NotNil(t, out)
 	assert.Len(t, out, 1)
 
+}
+
+func GetTestClient() *TestClient {
+	return &TestClient{}
+}
+
+var (
+	_ = Client(&TestClient{})
+)
+
+// TestClient is a test dapr client
+type TestClient struct {
+}
+
+// InvokeService mocks invoking service
+func (c *TestClient) InvokeBinding(ctx trace.SpanContext, binding string, in interface{}) (out []byte, err error) {
+	return []byte(""), nil
 }

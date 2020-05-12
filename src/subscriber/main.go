@@ -9,7 +9,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mchmarny/gcputil/env"
+	dapr "github.com/mchmarny/godapr/v1"
 	"go.opencensus.io/plugin/ochttp"
+	"go.opencensus.io/trace"
 	"gopkg.in/olahol/melody.v1"
 )
 
@@ -22,12 +24,21 @@ var (
 	// service
 	servicePort = env.MustGetEnvVar("PORT", "8083")
 	subTopic    = env.MustGetEnvVar("SUBSCRIBER_TOPIC_NAME", "messages")
+	bindingName = env.MustGetEnvVar("PRODUCER_BINDING_NAME", "send")
 
 	broadcaster *melody.Melody
+
+	// dapr
+	daprClient Client
+
+	// test client against local interace
+	_ = Client(dapr.NewClient())
 )
 
 func main() {
 	gin.SetMode(gin.ReleaseMode)
+
+	daprClient = dapr.NewClient()
 
 	// router
 	r := gin.New()
@@ -63,4 +74,9 @@ func Options(c *gin.Context) {
 		c.Header("Content-Type", "application/json")
 		c.AbortWithStatus(http.StatusOK)
 	}
+}
+
+// Client is the minim client support for testing
+type Client interface {
+	InvokeBinding(ctx trace.SpanContext, binding string, in interface{}) (out []byte, err error)
 }

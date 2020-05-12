@@ -28,7 +28,6 @@ var (
 	eventTopic    = env.MustGetEnvVar("PRODUCER_PUBSUB_TOPIC_NAME", "messages")
 	serviceName   = env.MustGetEnvVar("PRODUCER_SERVICE_NAME", "formatter")
 	serviceMethod = env.MustGetEnvVar("PRODUCER_METHOD_NAME", "case")
-	bindingName   = env.MustGetEnvVar("PRODUCER_BINDING_NAME", "send")
 
 	// dapr
 	daprClient Client
@@ -79,5 +78,4 @@ type Client interface {
 	SaveState(ctx trace.SpanContext, store, key string, data interface{}) error
 	InvokeService(ctx trace.SpanContext, service, method string, data interface{}) (out []byte, err error)
 	Publish(ctx trace.SpanContext, topic string, data interface{}) error
-	InvokeBinding(ctx trace.SpanContext, binding string, data interface{}) (out []byte, err error)
 }

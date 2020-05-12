@@ -8,8 +8,7 @@
     "comexampleothervalue" : 5,
     "datacontenttype" : "application/json",
     "data" : {
-        "appinfoA" : "abc",
-        "appinfoB" : 123,
-        "appinfoC" : true
+        "id":"1", 
+        "txt":"test"
     }
 }
