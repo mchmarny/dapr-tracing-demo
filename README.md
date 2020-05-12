@@ -129,7 +129,7 @@ tracestate:
 
 ## Pubsub subscribe 
 
-**Status**: ❌
+**Status**: ✅
 **Description**: Expected trace parent and trace state to be populated
 
 ```shell
