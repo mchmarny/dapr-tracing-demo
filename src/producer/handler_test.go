@@ -10,7 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
-	"github.com/mchmarny/dapr-tracing-demo/producer/message"
+	"github.com/mchmarny/dapr-tracing-demo/message"
 	"github.com/stretchr/testify/assert"
 	"go.opencensus.io/trace"
 )

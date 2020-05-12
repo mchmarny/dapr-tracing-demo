@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 
 	"github.com/google/uuid"
-	"github.com/mchmarny/dapr-tracing-demo/producer/message"
+	"github.com/mchmarny/dapr-tracing-demo/message"
 	"go.opencensus.io/plugin/ochttp/propagation/tracecontext"
 	"go.opencensus.io/trace"
 )
