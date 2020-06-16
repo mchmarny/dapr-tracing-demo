@@ -47,6 +47,8 @@ Inside of the `dapr-tracing-demo` directory, start each one of the service indiv
 dapr run dist/formatter \
      --app-id formatter \
      --app-port 8082 \
+     --components-path ./components \
+     --log-level debug \
      --protocol http
 ```
 
@@ -56,6 +58,8 @@ dapr run dist/formatter \
 dapr run dist/subscriber \
      --app-id subscriber \
      --app-port 8083 \
+     --components-path ./components \
+     --log-level debug \
      --protocol http
 ```
 
@@ -66,6 +70,8 @@ dapr run dist/producer \
      --app-id producer \
      --app-port 8081 \
      --protocol http \
+     --components-path ./components \
+     --log-level debug \
      --port 3500
 ```
 
@@ -82,7 +88,7 @@ dist/sender
 Now that all the services are running, send data by posting data to Dapr for the `receive` input binding
 
 ```shell
-curl -X POST -d '{ "data": {"id":"1", "txt":"test"} }' \
+curl -X POST -d '{ "data": {"id":"1", "txt":"test"}, "operation": "create" }' \
      -H "Content-type: application/json" \
      "http://localhost:3500/v1.0/bindings/receive"
 ```
