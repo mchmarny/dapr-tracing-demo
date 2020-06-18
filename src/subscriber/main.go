@@ -10,7 +10,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mchmarny/gcputil/env"
 	dapr "github.com/mchmarny/godapr/v1"
-	"go.opencensus.io/plugin/ochttp"
 	"go.opencensus.io/trace"
 	"gopkg.in/olahol/melody.v1"
 )
@@ -57,7 +56,7 @@ func main() {
 	// server
 	hostPort := net.JoinHostPort("0.0.0.0", servicePort)
 	logger.Printf("Server (%s) starting: %s \n", AppVersion, hostPort)
-	if err := http.ListenAndServe(hostPort, &ochttp.Handler{Handler: r}); err != nil {
+	if err := http.ListenAndServe(hostPort, r); err != nil {
 		logger.Fatalf("server error: %v", err)
 	}
 }
